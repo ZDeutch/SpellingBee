@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 // Spelling Bee by Zander Deutch
@@ -52,8 +53,6 @@ public class SpellingBee {
 
     public ArrayList<String> generateHelper(String s, String letters) {
         ArrayList<String> helper = new ArrayList<String>();
-        System.out.println("s: " + s);
-        System.out.println("letters: " + letters);
         if (letters.isEmpty()) {
             if(s.isEmpty()) {
                 return helper;
@@ -64,8 +63,6 @@ public class SpellingBee {
         }
         for (int i = 0; i < letters.length(); i++) {
             ArrayList<String> tempList = generateHelper(s + letters.charAt(i), letters.substring(0, i) + letters.substring(i + 1));
-            // keep track of letters that were copied
-            // Once first o is seen, then store that in array of chars, and don't run recursive call if you see same letter again
             for (int j = 0; j < tempList.size(); j++) {
                 helper.add(tempList.get(j));
             }
@@ -80,13 +77,14 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void sort() {
         // YOUR CODE HERE
-        mergeSort(words, 0, words.size() - 1);
+        words = mergeSort(words, 0, words.size() - 1);
     }
 
     public ArrayList<String> mergeSort(ArrayList<String> arr, int low, int high) {
         if(high - low == 0) {
-            ArrayList<String> sorted =
-            return arr;
+            ArrayList<String> sorted = new ArrayList<String>();
+            sorted.add(arr.get(low));
+            return sorted;
         }
 
         int mid = (high + low) / 2;
@@ -94,6 +92,36 @@ public class SpellingBee {
         ArrayList<String> arr1 = mergeSort(arr, low, mid);
         ArrayList<String> arr2 = mergeSort(arr, mid + 1, high);
 
+        return merge(arr1, arr2);
+    }
+
+    public ArrayList<String> merge(ArrayList<String> arr1, ArrayList<String> arr2) {
+        ArrayList<String> merged = new ArrayList<String>();
+
+        int i = 0;
+        int j = 0;
+
+        while(i < arr1.size() && j < arr2.size()) {
+            if(arr1.get(i).compareTo(arr2.get(j)) <= 0) {
+                merged.add(arr1.get(i));
+                i++;
+            } else {
+                merged.add(arr2.get(j));
+                j++;
+            }
+        }
+
+        while(i < arr1.size()) {
+            merged.add(arr1.get(i));
+            i++;
+        }
+
+        while(j < arr2.size()) {
+            merged.add(arr2.get(j));
+            j++;
+        }
+
+        return merged;
     }
 
     // Removes duplicates from the sorted list.
@@ -169,8 +197,8 @@ public class SpellingBee {
         // Generate and print all valid words from those letters.
         SpellingBee sb = new SpellingBee(letters);
         sb.generate();
-        System.out.println(sb.words);
         sb.sort();
+        System.out.println(sb.words);
         sb.removeDuplicates();
         sb.checkWords();
         try {
