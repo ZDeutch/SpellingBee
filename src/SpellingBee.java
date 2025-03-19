@@ -69,7 +69,7 @@ public class SpellingBee {
             // Do another recursive call
             // Shifting each letter into string and removing that letter from letters
             ArrayList<String> tempList = generateHelper(s + letters.charAt(i), letters.substring(0, i) + letters.substring(i + 1));
-            // add all of these words into helper
+            // Add all of these words into helper
             helper.addAll(tempList);
         }
 
